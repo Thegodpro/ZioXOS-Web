@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Descargas De ZioXOS</title>
+    <style>
+        @font-face {
+            font-family: ZioXFont;
+            src: url(font/ZioXOS_Font_Oficial.ttf);
+        }
+
+        /* =========================================================
+           VARIABLES AVANZADAS Y MODO OSCURO
+           ========================================================= */
+        :root {
+            --bg-color: rgb(255, 94, 0);
+            --bg-gradient: linear-gradient(135deg, rgb(255, 94, 0) 0%, rgb(255, 140, 0) 100%);
+            --text: #ffffff;
+            --nav-bg: rgba(255, 255, 0, 0.3);
+            --nav-blur: blur(15px);
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --card-border: rgba(255, 255, 255, 0.3);
+            --accent: #ffcc00;
+            --shadow-glow: rgba(255, 204, 0, 0.5);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .dark-mode {
+            --bg-color: #0f0f0f;
+            --bg-gradient: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            --text: #f0f0f0;
+            --nav-bg: rgba(20, 20, 20, 0.6);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent: #ff6a00;
+            --shadow-glow: rgba(255, 106, 0, 0.5);
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text); }
+
+        body {
+            margin: 0;
+            font-family: ZioXFont, system-ui, sans-serif;
+            background: var(--bg-color);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text);
+            text-align: center;
+            transition: background 0.5s ease, color 0.5s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* =========================================================
+           NAVBAR GLOBAL
+           ========================================================= */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0px 40px; height: 70px;
+            background: var(--nav-bg); backdrop-filter: var(--nav-blur);
+            -webkit-backdrop-filter: var(--nav-blur);
+            border-bottom: 1px solid var(--card-border);
+            position: sticky; top: 0; z-index: 3000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        
+        .logo {
+            display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: bold;
+            text-decoration: none; color: var(--text); transition: var(--transition);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .logo:hover { transform: scale(1.05); }
+        .logo img { height: 57px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); }
+        
+        .nav-links a {
+            color: var(--text); text-decoration: none; font-size: 17px;
+            padding: 8px 16px; border-radius: 12px; transition: var(--transition);
+            white-space: nowrap;
+        }
+        .nav-links a:hover { background: var(--card-bg); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .nav-links a.active { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--shadow-glow); font-weight: bold; }
+
+        #avatar {
+            width: 45px; height: 45px; border-radius: 50%; cursor: pointer; object-fit: cover;
+            border: 2px solid var(--accent); transition: var(--transition); display: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        #avatar:hover { box-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent); transform: scale(1.15) rotate(5deg); }
+
+        /* =========================================================
+           CONTENIDO Y ANIMACIONES
+           ========================================================= */
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(40px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        h1 { font-size: 55px; margin-bottom: 40px; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        
+        .subtitle6 { font-size: 45px; font-weight: 600; letter-spacing: 2px; margin-top: 60px; margin-bottom: 15px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .info6 { font-size: 22px; font-weight: 500; margin-bottom: 40px; line-height: 1.6; max-width: 900px; margin-left: auto; margin-right: auto; opacity: 0.9; }
+
+        /* TABLAS PREMIUM */
+        .table-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: center; }
+        
+        th { background: rgba(0,0,0,0.3); color: var(--accent); padding: 18px; font-size: 18px; letter-spacing: 1px; text-transform: uppercase; }
+        td { padding: 15px; font-size: 17px; border-bottom: 1px solid var(--card-border); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.08); }
+        
+        td:first-child { font-weight: bold; }
+
+        /* BOTONES DE DESCARGA */
+        .download-btn {
+            display: inline-block; padding: 10px 25px;
+            background: var(--card-bg); color: var(--text);
+            font-size: 16px; font-weight: bold; border-radius: 30px;
+            border: 1px solid var(--card-border);
+            transition: var(--transition); text-decoration: none;
+            backdrop-filter: blur(5px);
+        }
+        .download-btn:hover {
+            background: var(--accent); color: #000;
+            box-shadow: 0 0 20px var(--shadow-glow);
+            transform: translateY(-3px) scale(1.05);
+            border-color: var(--accent);
+        }
+
+         /* =========================================================
+           MENÚ LATERAL Y EFECTOS VISUALES
+           ========================================================= */
+        #sideMenu { position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(25px); border-left: 1px solid var(--card-border); padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; transition: right 0.5s cubic-bezier(0.25, 1, 0.5, 1); z-index: 4000; box-shadow: -10px 0 40px rgba(0,0,0,0.5); }
+        #sideMenu.show { right: 0; }
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); opacity: 0; visibility: hidden; z-index: 3500; transition: 0.3s; }
+        #overlay.show { opacity: 1; visibility: visible; }
+        
+        .menu-item { padding: 15px 20px; border-radius: 15px; cursor: pointer; font-weight: bold; font-size: 17px; transition: var(--transition); background: rgba(255, 255, 255, 0.05); color: #fff; text-align: left; border: 1px solid transparent; }
+        .menu-item:hover { background: var(--accent); color: #000; transform: translateX(10px); border-color: var(--accent); box-shadow: 0 5px 15px var(--shadow-glow); }
+
+        #avatar { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; object-fit: cover; border: 2px solid var(--accent); display: none; transition: var(--transition); }
+        #avatar:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 15px var(--accent); }
+
+        .navbar.estilo-animado .nav-links a, .navbar.estilo-animado .logo { position: relative; border-radius: 0; background: transparent !important; box-shadow: none !important; }
+        .navbar.estilo-animado .nav-links a::after, .navbar.estilo-animado .logo::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: right; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 0 10px var(--accent); }
+        .navbar.estilo-animado .nav-links a:hover::after, .navbar.estilo-animado .logo:hover::after, .navbar.estilo-animado .nav-links a.active::after { transform: scaleX(1); transform-origin: left; }
+        .navbar.estilo-animado .nav-links a.active { color: var(--accent); text-shadow: 0 0 10px var(--shadow-glow); }
+
+        .navbar.estilo-cajas { background: transparent !important; border-bottom: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; top: 15px !important; }
+        .navbar.estilo-cajas .logo, .navbar.estilo-cajas .nav-links { background: rgba(40, 40, 40, 0.4) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important; border: 1px solid var(--card-border) !important; border-radius: 40px !important; padding: 5px 25px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; height: 55px; box-sizing: border-box; align-items: center; }
+        .navbar.estilo-cajas .logo { padding: 0px 20px !important; }
+        .navbar.estilo-cajas .logo img { height: 45px; }
+
+        /* =========================================================
+           📱 MOTOR RESPONSIVO MÓVIL (NAVBAR APILADA)
+           ========================================================= */
+        @media screen and (max-width: 768px) {
+            :root { --nav-height: 110px; }
+            .navbar { flex-direction: column !important; justify-content: center !important; padding: 10px 5px 8px 5px !important; height: auto !important; min-height: 90px; }
+            .logo { font-size: 20px !important; margin-bottom: 8px !important; gap: 8px !important; width: 100%; justify-content: center; }
+            .logo img { height: 35px !important; }
+            .nav-links { width: 100%; justify-content: center !important; flex-wrap: wrap !important; gap: 4px !important; padding: 0 !important; }
+            .nav-links a { font-size: 11px !important; padding: 6px 8px !important; border-radius: 8px !important; }
+            #avatar { width: 32px !important; height: 32px !important; margin-left: 5px; }
+
+            .navbar.estilo-cajas { top: 5px !important; }
+            .navbar.estilo-cajas .logo { height: 40px !important; margin-bottom: 8px !important; background: rgba(40, 40, 40, 0.4) !important; border: 1px solid var(--card-border) !important; border-radius: 20px !important; width: auto !important; padding: 0 20px !important; display: inline-flex !important; }
+            .navbar.estilo-cajas .nav-links { padding: 6px !important; border-radius: 15px !important; height: auto !important; }
+            .navbar.estilo-cajas .logo img { height: 28px !important; }
+
+            .container { padding: 30px 15px !important; }
+        }
+        @media screen and (max-width: 480px) {
+            .nav-links { gap: 3px !important; }
+            .nav-links a { font-size: 10px !important; padding: 5px 6px !important; }
+        }
+
+              
+    </style>
+</head>
+<body>
+
+    <div class="navbar" id="mainNavbar">
+        <a href="index.html" class="logo">
+            <img src="zioxos_logo.png" alt="Logo ZioXOS">
+            <span>ZioXOS</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="Descargas.html" class="active">Descargas</a>
+            <a href="Documentos.html">Documentos</a>
+            <a href="Comunidades.html">Comunidades</a>
+            <a href="Novedades.html">Novedades</a>
+            <a href="Ayuda.html">Ayuda</a>
+            <a id="linkCuenta" href="Cuenta.html">👤 Cuenta</a>
+            <img id="avatar" src="avatar_default.png" alt="Avatar"> 
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+    <div id="sideMenu">
+        <div class="menu-header" style="display: flex; align-items: center; gap: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
+            <img id="menuAvatar" src="avatar_default.png" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent);">
+            <span id="menuUsername" style="font-size: 18px; font-weight: bold;">Usuario ZioX</span>
+        </div>
+        <div class="menu-item" onclick="location.href='Cuenta.html'">⚙️ Perfil</div>
+        <div class="menu-item" onclick="toggleTheme()">🌙 Cambiar Tema</div>
+        <div class="menu-item" onclick="toggleNavbarAnimation()">✨ Línea de Neón</div>
+        <div class="menu-item" onclick="toggleNavbarShape()">🔲 Forma de Cápsulas</div>
+        <div class="menu-item" onclick="logout()">🚪 Cerrar Sesión</div>
+    </div>
+
+    <div class="container">
+        <h1>Descargas De ZioXOS:</h1>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>ISO</th>
+                    <th>Versión</th>
+                    <th>Tamaño</th>
+                    <th>Descargar</th>
+                </tr>
+                <tr>
+                    <td>ZioxOS Alpha</td>
+                    <td>1.0</td>
+                    <td>No Especificado</td>
+                    <td style="color: #aaa;">No Disponible</td>
+                </tr>
+                <tr>
+                    <td>ZioXOS Beta</td>
+                    <td>2.0</td>
+                    <td>No Especificado</td>
+                    <td style="color: #aaa;">No Disponible</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2 class="subtitle6">ACUERDOS DE ZIOXOS:</h2>
+        <p class="info6">Al descargar la ISO de ZioXOS tomara en cuenta los terminos del sistema. No me hago responsable de que elija mal disco en la instalacion. Se buscaran sistemas de todos los discos y se mostraran en la instalacion si quiere instalarlo en ese disco o no. Si lo quiere usar Virtualmente sin exponer su equipo, lo ideal es usar VirtualBox o VMware.</p>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Maquinas Virtuales</th>
+                    <th>Version</th>
+                    <th>Tamaño</th>
+                    <th>Descargar</th>
+                </tr>
+                <tr>
+                    <td>Virtualbox</td>
+                    <td>7.2.6</td>
+                    <td>169 MB</td>
+                    <td><a href="ejecutables/VirtualBox-7.2.6a-172322-Win.exe" download class="download-btn">Descargar</a></td>
+                </tr>
+                <tr>
+                    <td>VMware</td>
+                    <td>25H2u1</td>
+                    <td>278 MB</td>
+                    <td><a href="ejecutables/VMware-Workstation-Full-25H2u1-25219725.exe" download class="download-btn">Descargar</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="Menus.js"></script> <script>
+        // Inicialización de Supabase
+        const supabaseClient = supabase.createClient(
+            "https://xcfpfdlkiistpugwflrz.supabase.co",
+            "sb_publishable_tSoaoSQ_a7EQy--0_glOhw_0IT9ztX1"
+        );
+
+        async function loadNavbarUser() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            const loginBtn = document.getElementById("linkCuenta");
+            const avatar = document.getElementById("avatar");
+            const menuAvatar = document.getElementById("menuAvatar");
+            const menuUsername = document.getElementById("menuUsername");
+
+            if (user) {
+                if (loginBtn) loginBtn.style.display = "none";
+                const profileImg = localStorage.getItem('ziox_pic') || `https://xcfpfdlkiistpugwflrz.supabase.co/storage/v1/object/public/avatars/${user.id}/avatar.png?${Date.now()}`;
+                
+                if (avatar) {
+                    avatar.style.display = "block";
+                    avatar.src = profileImg;
+                    avatar.onerror = () => avatar.src = "avatar_default.png";
+                }
+                if (menuAvatar) {
+                    menuAvatar.src = profileImg;
+                    menuAvatar.onerror = () => menuAvatar.src = "avatar_default.png";
+                }
+                const uName = localStorage.getItem('ziox_user');
+                if (uName && menuUsername) menuUsername.innerText = uName;
+            } else {
+                if (loginBtn) loginBtn.style.display = "inline-block";
+                if (avatar) avatar.style.display = "none";
+            }
+        }
+
+        function toggleNavbarAnimation() { document.getElementById('mainNavbar').classList.toggle('estilo-animado'); }
+        function toggleNavbarShape() { document.getElementById('mainNavbar').classList.toggle('estilo-cajas'); }
+        
+        // ¡No olvides asegurarte de que loadNavbarUser() se llame dentro de tu document.addEventListener("DOMContentLoaded")!
+        document.addEventListener("DOMContentLoaded", loadNavbarUser);
+    </script>
+</body>
+</html>

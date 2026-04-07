@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Inicio - ZioXOS</title>
+    <style>
+        @font-face {
+            font-family: ZioXFont;
+            src: url(font/ZioXOS_Font_Oficial.ttf);
+        }
+
+        /* =========================================================
+           VARIABLES MAESTRAS (Ecosistema ZioXOS)
+           ========================================================= */
+        :root {
+            --bg-color: rgb(255, 94, 0);
+            --bg-gradient: linear-gradient(135deg, rgb(255, 94, 0) 0%, rgb(255, 140, 0) 100%);
+            --text: #ffffff;
+            --nav-bg: rgba(255, 255, 0, 0.3);
+            --nav-blur: blur(15px);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --card-border: rgba(255, 255, 255, 0.25);
+            --accent: #ffcc00;
+            --shadow-glow: rgba(255, 204, 0, 0.4);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --nav-height: 70px;
+        }
+
+        .dark-mode {
+            --bg-color: #0f0f0f;
+            --bg-gradient: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            --text: #f0f0f0;
+            --nav-bg: rgba(20, 20, 20, 0.6);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent: #ff6a00;
+        }
+
+        body {
+            margin: 0;
+            font-family: ZioXFont, system-ui, sans-serif;
+            background: var(--bg-color);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text);
+            text-align: center;
+            transition: background 0.5s ease, color 0.5s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-top: var(--nav-height);
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+        /* =========================================================
+           NAVBAR BASE (Versión Escritorio)
+           ========================================================= */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0px 40px; height: var(--nav-height);
+            background: var(--nav-bg); backdrop-filter: var(--nav-blur);
+            -webkit-backdrop-filter: var(--nav-blur);
+            border-bottom: 1px solid var(--card-border);
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 3000;
+            transition: var(--transition);
+            box-sizing: border-box;
+        }
+        
+        .logo { 
+            display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: bold; 
+            text-decoration: none; color: var(--text); transition: var(--transition); 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3); padding-bottom: 5px;
+        }
+        .logo:hover { transform: scale(1.05); color: var(--accent); text-shadow: 0 0 15px var(--shadow-glow); }
+        .logo img { height: 57px; transition: var(--transition); }
+        .logo:hover img { filter: drop-shadow(0 0 10px var(--shadow-glow)); }
+
+        .nav-links { display: flex; align-items: center; gap: 20px; transition: var(--transition); }
+        .nav-links a { 
+            color: var(--text); text-decoration: none; font-size: 17px; 
+            padding: 8px 16px; border-radius: 12px; transition: var(--transition); 
+        }
+        .nav-links a:hover { background: var(--card-bg); transform: translateY(-2px); }
+        .nav-links a.active { background: var(--accent); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--shadow-glow); }
+
+        #avatar { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; object-fit: cover; border: 2px solid var(--accent); display: none; transition: var(--transition); }
+        #avatar:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 15px var(--accent); }
+
+        /* =========================================================
+           EFECTOS DINÁMICOS NAVBAR
+           ========================================================= */
+        .navbar.estilo-animado .nav-links a, .navbar.estilo-animado .logo { position: relative; border-radius: 0; background: transparent !important; box-shadow: none !important; }
+        .navbar.estilo-animado .nav-links a::after, .navbar.estilo-animado .logo::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
+            background: var(--accent); transform: scaleX(0); transform-origin: right;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 0 10px var(--accent);
+        }
+        .navbar.estilo-animado .nav-links a:hover::after, .navbar.estilo-animado .logo:hover::after, .navbar.estilo-animado .nav-links a.active::after { transform: scaleX(1); transform-origin: left; }
+        .navbar.estilo-animado .nav-links a.active { color: var(--accent); text-shadow: 0 0 10px var(--shadow-glow); }
+
+        .navbar.estilo-cajas { background: transparent !important; border-bottom: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; top: 15px !important; }
+        .navbar.estilo-cajas .logo, .navbar.estilo-cajas .nav-links {
+            background: rgba(40, 40, 40, 0.4) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid var(--card-border) !important; border-radius: 40px !important; padding: 5px 25px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; height: 55px; box-sizing: border-box; align-items: center;
+        }
+        .navbar.estilo-cajas .logo { padding: 0px 20px !important; }
+        .navbar.estilo-cajas .logo img { height: 45px; }
+        .dark-mode .navbar.estilo-cajas .logo, .dark-mode .navbar.estilo-cajas .nav-links { background: rgba(10, 10, 10, 0.6) !important; }
+        .navbar.estilo-cajas .logo:hover, .navbar.estilo-cajas .nav-links:hover { border-color: var(--accent) !important; box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 15px var(--shadow-glow) !important; }
+
+        /* =========================================================
+           SECCIONES PRINCIPALES
+           ========================================================= */
+        .container { max-width: 1100px; margin: 0 auto; padding: 60px 20px; }
+        .hero-title { font-size: 70px; font-weight: bold; margin-bottom: 20px; text-shadow: 0 5px 20px rgba(0,0,0,0.4); line-height: 1.1; }
+        .hero-subtitle { font-size: 24px; opacity: 0.9; margin-bottom: 60px; max-width: 850px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+
+        .btn-main {
+            display: inline-block; padding: 15px 40px; font-size: 20px; font-weight: bold;
+            color: #000; background: var(--accent); border-radius: 30px; text-decoration: none;
+            box-shadow: 0 10px 20px var(--shadow-glow); transition: var(--transition);
+        }
+        .btn-main:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 30px var(--shadow-glow); }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 80px; }
+
+        .glass-card {
+            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border); border-radius: 24px; padding: 40px 30px;
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .glass-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
+            transform: skewX(-20deg); transition: 0.6s; pointer-events: none;
+        }
+        .glass-card:hover::before { left: 150%; }
+        .glass-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 15px var(--shadow-glow); }
+
+        .card-icon { font-size: 50px; margin-bottom: 20px; display: block; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3)); }
+        .card-title { font-size: 24px; font-weight: bold; margin-bottom: 15px; color: var(--accent); }
+        .card-text { font-size: 16px; opacity: 0.85; line-height: 1.6; }
+
+        /* =========================================================
+           MENÚ LATERAL
+           ========================================================= */
+        #sideMenu { position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(25px); border-left: 1px solid var(--card-border); padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; transition: right 0.5s cubic-bezier(0.25, 1, 0.5, 1); z-index: 4000; box-shadow: -10px 0 40px rgba(0,0,0,0.5); }
+        #sideMenu.show { right: 0; }
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); opacity: 0; visibility: hidden; z-index: 3500; transition: 0.3s; }
+        #overlay.show { opacity: 1; visibility: visible; }
+        
+        .menu-item { padding: 15px 20px; border-radius: 15px; cursor: pointer; font-weight: bold; font-size: 17px; transition: var(--transition); background: rgba(255, 255, 255, 0.05); color: #fff; text-align: left; border: 1px solid transparent; }
+        .menu-item:hover { background: var(--accent); color: #000; transform: translateX(10px); border-color: var(--accent); box-shadow: 0 5px 15px var(--shadow-glow); }
+
+        .reveal { opacity: 0 !important; transform: translateY(40px) scale(0.98) !important; transition: opacity 0.7s ease-out, transform 0.7s ease-out !important; }
+        .reveal.active { opacity: 1 !important; transform: translateY(0) scale(1) !important; }
+
+        /* =========================================================
+           📱 MOTOR RESPONSIVO (NUEVO DISEÑO APILADO PARA MÓVILES)
+           ========================================================= */
+        @media screen and (max-width: 768px) {
+            
+            :root {
+                /* Aumentamos la altura del cuerpo para que la doble navbar no tape el contenido */
+                --nav-height: 110px; 
+            }
+
+            /* NAVBAR MÓVIL: DISEÑO DE DOS LÍNEAS (STACKED) */
+            .navbar { 
+                flex-direction: column !important; /* Pone una cosa arriba de la otra */
+                justify-content: center !important;
+                padding: 10px 5px 8px 5px !important; 
+                height: auto !important; /* Se ajusta a lo que necesite */
+                min-height: 90px;
+            }
+            
+            /* LÍNEA 1: EL LOGO */
+            .logo { 
+                font-size: 20px !important; 
+                margin-bottom: 8px !important; /* Separa el logo de los botones */
+                gap: 8px !important;
+                width: 100%;
+                justify-content: center; /* Centramos el logo en la pantalla */
+            }
+            .logo img { height: 35px !important; }
+            
+            /* LÍNEA 2: LOS ENLACES COMPRIMIDOS */
+            .nav-links {
+                width: 100%;
+                justify-content: center !important;
+                flex-wrap: wrap !important; /* Si no caben, bajan a otra línea pero SIN barra de desplazamiento */
+                gap: 4px !important; /* Espacio mínimo entre botones */
+                padding: 0 !important;
+            }
+            
+            /* TEXTOS MINIATURA PARA QUE QUEPAN */
+            .nav-links a { 
+                font-size: 11px !important; 
+                padding: 6px 8px !important; 
+                border-radius: 8px !important; /* Bordes un poco más chicos */
+            }
+            
+            #avatar { width: 32px !important; height: 32px !important; margin-left: 5px; }
+
+            /* Modo Cajas MÓVIL (Ajuste para dos líneas) */
+            .navbar.estilo-cajas { top: 5px !important; }
+            .navbar.estilo-cajas .logo {
+                height: 40px !important;
+                margin-bottom: 8px !important;
+                background: rgba(40, 40, 40, 0.4) !important;
+                border: 1px solid var(--card-border) !important;
+                border-radius: 20px !important;
+                width: auto !important;
+                padding: 0 20px !important;
+                display: inline-flex !important;
+            }
+            .navbar.estilo-cajas .nav-links {
+                padding: 6px !important;
+                border-radius: 15px !important;
+                height: auto !important; /* Que crezca si se hacen 2 filas de botones */
+            }
+            .navbar.estilo-cajas .logo img { height: 28px !important; }
+
+            /* TEXTOS Y CONTENEDORES MÓVILES */
+            .container { padding: 30px 15px !important; }
+            .hero-title { font-size: 38px !important; line-height: 1.2 !important; }
+            .hero-subtitle { font-size: 15px !important; margin-bottom: 40px !important; }
+            
+            /* CARDS MINIATURAS */
+            .features-grid { margin-top: 40px !important; gap: 15px !important; }
+            .glass-card { padding: 20px 15px !important; border-radius: 18px !important; }
+            .card-icon { font-size: 38px !important; margin-bottom: 12px !important; }
+            .card-title { font-size: 20px !important; margin-bottom: 8px !important; }
+            .card-text { font-size: 13px !important; line-height: 1.5 !important; }
+        }
+
+        /* Pantallas MUY pequeñas (Celulares delgados como iPhone SE) */
+        @media screen and (max-width: 480px) {
+            .hero-title { font-size: 32px !important; }
+            .nav-links { gap: 3px !important; } /* Aún más pegaditos */
+            .nav-links a { font-size: 10px !important; padding: 5px 6px !important; }
+            .btn-main {
+                font-size: 16px !important;
+                padding: 12px 20px !important;
+                width: 100% !important; 
+                box-sizing: border-box !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar" id="mainNavbar">
+        <a href="index.html" class="logo">
+            <img src="zioxos_logo.png" alt="Logo ZioXOS">
+            <span>ZioXOS</span>
+        </a>
+        <div class="nav-links" id="navLinksContainer">
+            <a href="index.html" class="active">Inicio</a>
+            <a href="Descargas.html">Descargas</a>
+            <a href="Documentos.html">Documentos</a>
+            <a href="Comunidades.html">Comunidades</a>
+            <a href="Novedades.html">Novedades</a>
+            <a href="Ayuda.html">Ayuda</a>
+            <a id="linkCuenta" href="Cuenta.html">👤 Cuenta</a>
+            <img id="avatar" src="avatar_default.png" alt="Avatar"> 
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+    <div id="sideMenu">
+        <div class="menu-header" style="display: flex; align-items: center; gap: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
+            <img id="menuAvatar" src="avatar_default.png" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent);">
+            <span id="menuUsername" style="font-size: 18px; font-weight: bold;">Usuario ZioX</span>
+        </div>
+        <div class="menu-item" onclick="location.href='Cuenta.html'">⚙️ Perfil</div>
+        <div class="menu-item" onclick="toggleTheme()">🌙 Cambiar Tema</div>
+        <div class="menu-item" onclick="toggleNavbarAnimation()">✨ Línea de Neón</div>
+        <div class="menu-item" onclick="toggleNavbarShape()">🔲 Forma de Cápsulas</div>
+        <div class="menu-item" onclick="logout()">🚪 Cerrar Sesión</div>
+    </div>
+
+    <div class="container">
+        <h1 class="hero-title reveal">El Núcleo de la Próxima Generación</h1>
+        <p class="hero-subtitle reveal">ZioXOS redefine los límites del rendimiento. Diseñado con una arquitectura ultraligera desde cero y envuelto en una interfaz de cristal que transforma radicalmente tu manera de interactuar con la PC.</p>
+        <div class="reveal">
+            <a href="Descargas.html" class="btn-main">Descargar Alpha 1.0</a>
+        </div>
+
+        <div class="features-grid">
+            <div class="glass-card reveal">
+                <span class="card-icon">⚡</span>
+                <div class="card-title">Velocidad Pura</div>
+                <div class="card-text">Codificado meticulosamente en lenguajes de bajo nivel (Assembly y C). ZioXOS exprime cada ciclo de tu procesador eliminando por completo el bloatware. Solo recursos para lo que importa.</div>
+            </div>
+
+            <div class="glass-card reveal">
+                <span class="card-icon">💎</span>
+                <div class="card-title">Elegancia Translúcida</div>
+                <div class="card-text">Sumérgete en un entorno visual inmersivo con nuestro sistema "Glassmorphism". Ventanas esmeriladas, sombras dinámicas y animaciones fluidas a 60fps para una experiencia visual premium.</div>
+            </div>
+
+            <div class="glass-card reveal">
+                <span class="card-icon">🛡️</span>
+                <div class="card-title">Fortaleza de Arranque</div>
+                <div class="card-text">Construido bajo una estricta arquitectura de anillos de seguridad. Desde el gestor de arranque (Bootloader) hasta la capa de software, tu información permanece en un entorno completamente aislado.</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseClient = supabase.createClient(
+            "https://xcfpfdlkiistpugwflrz.supabase.co",
+            "sb_publishable_tSoaoSQ_a7EQy--0_glOhw_0IT9ztX1"
+        );
+
+        async function loadNavbarUser() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            const loginBtn = document.getElementById("linkCuenta");
+            const avatar = document.getElementById("avatar");
+            const menuAvatar = document.getElementById("menuAvatar");
+            const menuUsername = document.getElementById("menuUsername");
+
+            if (user) {
+                if (loginBtn) loginBtn.style.display = "none";
+                const profileImg = `https://xcfpfdlkiistpugwflrz.supabase.co/storage/v1/object/public/avatars/${user.id}/avatar.png?${Date.now()}`;
+                
+                if (avatar) {
+                    avatar.style.display = "block";
+                    avatar.src = profileImg;
+                    avatar.onerror = () => avatar.src = "avatar_default.png";
+                }
+                if (menuAvatar) {
+                    menuAvatar.src = profileImg;
+                    menuAvatar.onerror = () => menuAvatar.src = "avatar_default.png";
+                }
+                const { data: profile } = await supabaseClient.from('profiles').select('username').eq('user_id', user.id).maybeSingle();
+                if (profile && menuUsername) menuUsername.innerText = profile.username;
+            } else {
+                if (loginBtn) loginBtn.style.display = "inline-block";
+                if (avatar) avatar.style.display = "none";
+            }
+        }
+
+        // FUNCIONES DE NAVBAR
+        function toggleNavbarAnimation() { document.getElementById('mainNavbar').classList.toggle('estilo-animado'); }
+        function toggleNavbarShape() { document.getElementById('mainNavbar').classList.toggle('estilo-cajas'); }
+
+        function initReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add("active");
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll(".reveal").forEach((el, i) => {
+                el.style.transitionDelay = `${i * 0.1}s`;
+                observer.observe(el);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadNavbarUser();
+            initReveal();
+        });
+    </script>
+    <script src="Menus.js"></script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Comunidades - ZioXOS</title>
+    <style>
+        @font-face {
+            font-family: ZioXFont;
+            src: url(font/ZioXOS_Font_Oficial.ttf);
+        }
+
+        /* =========================================================
+           VARIABLES MAESTRAS (ADN index.html)
+           ========================================================= */
+        :root {
+            --bg-color: rgb(255, 94, 0);
+            --bg-gradient: linear-gradient(135deg, rgb(255, 94, 0) 0%, rgb(255, 140, 0) 100%);
+            --text: #ffffff;
+            --nav-bg: rgba(255, 255, 0, 0.3);
+            --nav-blur: blur(15px);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --card-border: rgba(255, 255, 255, 0.25);
+            --accent: #ffcc00;
+            --shadow-glow: rgba(255, 204, 0, 0.4);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --nav-height: 70px;
+        }
+
+        .dark-mode {
+            --bg-color: #0f0f0f;
+            --bg-gradient: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            --text: #f0f0f0;
+            --nav-bg: rgba(20, 20, 20, 0.6);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent: #ff6a00;
+        }
+
+        body {
+            margin: 0; font-family: ZioXFont, system-ui, sans-serif;
+            background: var(--bg-color); background-image: var(--bg-gradient);
+            background-attachment: fixed; color: var(--text); text-align: center;
+            transition: background 0.5s ease, color 0.5s ease; min-height: 100vh;
+            overflow-x: hidden; padding-top: var(--nav-height);
+        }
+
+        /* NAVBAR PREMIUM (index.html Style) */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0px 40px; height: var(--nav-height);
+            background: var(--nav-bg); backdrop-filter: var(--nav-blur);
+            -webkit-backdrop-filter: var(--nav-blur);
+            border-bottom: 1px solid var(--card-border);
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 3000;
+            transition: var(--transition); box-sizing: border-box;
+        }
+        
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: bold; text-decoration: none; color: var(--text); transition: var(--transition); }
+        .logo img { height: 57px; transition: 0.5s ease; }
+
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links a { color: var(--text); text-decoration: none; font-size: 17px; padding: 8px 16px; border-radius: 12px; transition: var(--transition); }
+        .nav-links a:hover { background: var(--card-bg); transform: translateY(-2px); }
+        .nav-links a.active { background: var(--accent); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--shadow-glow); }
+
+        #avatar { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; object-fit: cover; border: 2px solid var(--accent); display: none; transition: var(--transition); }
+        #avatar:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 15px var(--accent); }
+
+        /* EFECTOS DINÁMICOS NAVBAR */
+        .navbar.estilo-animado .nav-links a::after, .navbar.estilo-animado .logo::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
+            background: var(--accent); transform: scaleX(0); transition: transform 0.4s;
+        }
+        .navbar.estilo-animado .nav-links a:hover::after, .navbar.estilo-animado .nav-links a.active::after { transform: scaleX(1); }
+
+        .navbar.estilo-cajas { background: transparent !important; border-bottom: none !important; top: 15px !important; }
+        .navbar.estilo-cajas .logo, .navbar.estilo-cajas .nav-links {
+            background: rgba(40, 40, 40, 0.4) !important; backdrop-filter: blur(20px) !important;
+            border: 1px solid var(--card-border) !important; border-radius: 40px !important; padding: 5px 25px !important;
+        }
+
+        /* MENÚ LATERAL */
+        #sideMenu { position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(25px); border-left: 1px solid var(--card-border); padding: 30px 20px; display: flex; flex-direction: column; gap: 20px; transition: right 0.5s; z-index: 4000; }
+        #sideMenu.show { right: 0; }
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); opacity: 0; visibility: hidden; z-index: 3500; transition: 0.3s; }
+        #overlay.show { opacity: 1; visibility: visible; }
+        .menu-item { padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.05); text-align: left; font-weight: bold; color: #fff; border: 1px solid transparent; }
+        .menu-item:hover { background: var(--accent); color: #000; transform: translateX(10px); border-color: var(--accent); }
+
+        /* DISEÑO CHAT */
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .chat-container { background: var(--card-bg); backdrop-filter: blur(30px); border: 1px solid var(--card-border); border-radius: 24px; display: flex; flex-direction: column; height: 75vh; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden; }
+        .chat-header { background: rgba(0,0,0,0.25); padding: 15px 25px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; }
+        .yt-link-header { text-decoration: none; color: #ff0000; background: rgba(255,255,255,0.1); padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; border: 1px solid rgba(255,0,0,0.2); }
+
+        .chat-messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .comment-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 18px; text-align: left; border-left: 5px solid var(--accent); transition: var(--transition); }
+        .comment-card:hover { background: rgba(255,255,255,0.12); transform: scale(1.01); }
+
+        .chat-input-area { background: rgba(0,0,0,0.4); padding: 20px; border-top: 1px solid var(--card-border); display: flex; gap: 12px; }
+        .chat-input { flex: 1; padding: 14px; border-radius: 15px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.05); color: #fff; font-family: inherit; font-size: 15px; resize: none; }
+        .btn-send { background: var(--accent); color: #000; border: none; padding: 0 30px; border-radius: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+
+        /* MODAL CONVIVIO */
+        #modalConvivio { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); display: none; justify-content: center; align-items: center; z-index: 5000; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 35px; border-radius: 28px; max-width: 400px; width: 85%; }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.6s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media screen and (max-width: 768px) {
+            :root { --nav-height: 110px; }
+            .navbar { flex-direction: column !important; height: auto !important; padding: 10px 5px !important; }
+            .nav-links { gap: 5px; flex-wrap: wrap; justify-content: center; }
+            .nav-links a { font-size: 11px; padding: 6px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar" id="mainNavbar">
+        <a href="index.html" class="logo">
+            <img src="zioxos_logo.png" alt="Logo ZioXOS" id="zioxLogo">
+            <span>ZioXOS</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Inicio</a>
+            <a href="Descargas.html">Descargas</a>
+            <a href="Documentos.html">Documentos</a>
+            <a href="Comunidades.html" class="active">Comunidades</a>
+            <a href="Novedades.html">Novedades</a>
+            <a href="Ayuda.html">Ayuda</a>
+            <a id="linkCuenta" href="Cuenta.html">👤 Cuenta</a>
+            <img id="avatar" src="avatar_default.png"> 
+        </div>
+    </div>
+
+    <div id="modalConvivio">
+        <div class="modal-content">
+            <h2 style="color:var(--accent)">🛡️ Protocolo ZioX</h2>
+            <div style="text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; font-size: 14px; margin: 20px 0; line-height: 1.6;">
+                • Respeta a la comunidad dev.<br>
+                • No compartas links sospechosos.<br>
+                • Fomenta el desarrollo de ZioXOS.
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button onclick="closeModal()" style="flex:1; padding:12px; border-radius:12px; border:none; background:rgba(255,255,255,0.1); color:#fff; cursor:pointer;">Cancelar</button>
+                <button onclick="acceptRules()" style="flex:1; padding:12px; border-radius:12px; border:none; background:var(--accent); color:#000; font-weight:bold; cursor:pointer;">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+    <div id="sideMenu">
+        <div class="menu-header" style="display: flex; align-items: center; gap: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
+            <img id="menuAvatar" src="avatar_default.png" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent);">
+            <span id="menuUsername" style="font-size: 18px; font-weight: bold;">Usuario ZioX</span>
+        </div>
+        <div class="menu-item" onclick="location.href='Cuenta.html'">⚙️ Perfil</div>
+        <div class="menu-item" onclick="toggleTheme()">🌙 Cambiar Tema</div>
+        <div class="menu-item" onclick="toggleNavbarAnimation()">✨ Línea de Neón</div>
+        <div class="menu-item" onclick="toggleNavbarShape()">🔲 Forma de Cápsulas</div>
+        <div class="menu-item" onclick="logout()">🚪 Cerrar Sesión</div>
+    </div>
+
+    <div class="container reveal">
+        <div class="chat-container">
+            <div class="chat-header">
+                <span style="font-weight:bold; color:var(--accent); font-size: 18px;">🌍 Canal Global</span>
+                <a href="https://youtube.com/@ZioXOS" target="_blank" class="yt-link-header">📺 @ZioXOS</a>
+            </div>
+            <div class="chat-messages" id="commentsList">
+                <div style="text-align: center; opacity: 0.5; margin-top: 50px;">Sincronizando núcleo...</div>
+            </div>
+            <div class="chat-input-area" id="chatInputArea" style="display: none;">
+                <textarea id="commentInput" class="chat-input" placeholder="Escribe un mensaje..." rows="1"></textarea>
+                <button class="btn-send" onclick="handleCommentAttempt()">Enviar</button>
+            </div>
+            <div id="loginPrompt" style="padding: 20px; opacity: 0.6; font-weight: bold;">🔒 Inicia sesión para comentar.</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseClient = supabase.createClient("https://xcfpfdlkiistpugwflrz.supabase.co", "sb_publishable_tSoaoSQ_a7EQy--0_glOhw_0IT9ztX1");
+        let currentUser = null;
+
+        // MOTOR DE TEMA Y LOGO (Sincronizado con index.html)
+        function updateLogo(isDark) {
+            const logoImg = document.getElementById('zioxLogo');
+            if (logoImg) {
+                // Si el modo oscuro está activo, usamos el logo oscuro
+                logoImg.src = isDark ? 'zioxos_logo_dark.png' : 'zioxos_logo.png';
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('ziox_theme', isDark ? 'dark' : 'light');
+            updateLogo(isDark); // Actualizamos el logo al cambiar el tema
+        }
+
+        // CARGA DE USUARIO Y SIDE MENU
+        async function loadNavbarUser() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                currentUser = user;
+                document.getElementById("chatInputArea").style.display = "flex";
+                document.getElementById("loginPrompt").style.display = "none";
+                document.getElementById("linkCuenta").style.display = "none";
+                const avatar = document.getElementById("avatar");
+                avatar.style.display = "block";
+                avatar.src = localStorage.getItem('ziox_pic') || "avatar_default.png";
+                document.getElementById("menuAvatar").src = avatar.src;
+                const { data: profile } = await supabaseClient.from('profiles').select('username').eq('user_id', user.id).maybeSingle();
+                if (profile) document.getElementById("menuUsername").innerText = profile.username;
+            }
+        }
+
+        // CARGAR COMENTARIOS (Día Mes Año)
+        async function loadComments() {
+            const list = document.getElementById("commentsList");
+            const { data: comments } = await supabaseClient.from('comments').select('*, profiles(username, user_id)').order('created_at', { ascending: false });
+            if (comments) {
+                list.innerHTML = comments.map(c => {
+                    const d = new Date(c.created_at);
+                    const dateStr = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+                    const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    let osImg = "imagenes/zioxos_logo.png";
+                    if(c.device === "Windows") osImg = "imagenes/windows_logo.png";
+                    if(c.device === "Android") osImg = "imagenes/android_logo.png";
+                    
+                    return `
+                    <div class="comment-card">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                            <img src="https://xcfpfdlkiistpugwflrz.supabase.co/storage/v1/object/public/avatars/${c.user_id}/avatar.png" onerror="this.src='avatar_default.png'" style="width:34px; height:34px; border-radius:50%; border:2px solid var(--accent);">
+                            <div>
+                                <b style="color:var(--accent)">${c.profiles?.username || 'Usuario'}</b>
+                                <div style="font-size:10px; opacity:0.6;"><img src="${osImg}" style="width:12px;"> ${c.device}</div>
+                            </div>
+                        </div>
+                        <p style="margin:0;">${c.content}</p>
+                        <div style="margin-top:12px; font-size:10px; opacity:0.4;">📅 ${dateStr} • 🕒 ${timeStr}</div>
+                    </div>`;
+                }).join('');
+            }
+        }
+
+        // REGLAS Y PUBLICACIÓN
+        function handleCommentAttempt() {
+            if (!localStorage.getItem('ziox_rules_accepted')) document.getElementById('modalConvivio').style.display = 'flex';
+            else postComment();
+        }
+        function acceptRules() { localStorage.setItem('ziox_rules_accepted', 'true'); closeModal(); postComment(); }
+        function closeModal() { document.getElementById('modalConvivio').style.display = 'none'; }
+
+        async function postComment() {
+            const input = document.getElementById("commentInput");
+            const content = input.value.trim();
+            if (!content || !currentUser) return;
+            const ua = window.navigator.userAgent;
+            let dev = "Web";
+            if (/android/i.test(ua)) dev = "Android"; else if (/Windows/.test(ua)) dev = "Windows";
+            await supabaseClient.from('comments').insert([{ user_id: currentUser.id, content, device: dev }]);
+            input.value = ""; loadComments();
+        }
+
+        function toggleNavbarAnimation() { document.getElementById('mainNavbar').classList.toggle('estilo-animado'); }
+        function toggleNavbarShape() { document.getElementById('mainNavbar').classList.toggle('estilo-cajas'); }
+        async function logout() { localStorage.clear(); await supabaseClient.auth.signOut(); location.href = 'index.html'; }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Sincronizar tema y logo al cargar
+            const isDark = localStorage.getItem('ziox_theme') === 'dark';
+            if (isDark) document.body.classList.add('dark-mode');
+            updateLogo(isDark);
+
+            loadNavbarUser(); loadComments();
+            
+            const observer = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) e.target.classList.add("active"); }), { threshold: 0.1 });
+            document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+            
+            const av = document.getElementById('avatar');
+            if(av) av.onclick = () => { document.getElementById('sideMenu').classList.add('show'); document.getElementById('overlay').classList.add('show'); };
+            document.getElementById('overlay').onclick = () => { document.getElementById('sideMenu').classList.remove('show'); document.getElementById('overlay').classList.remove('show'); };
+        });
+    </script>
+</body>
+</html>

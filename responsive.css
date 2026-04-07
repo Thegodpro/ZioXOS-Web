@@ -1,0 +1,94 @@
+/* =========================================================
+   ZioXOS - MOTOR RESPONSIVO (Móviles y Tablets)
+   Esto se activa SOLAMENTE en pantallas pequeñas (< 768px)
+   ========================================================= */
+
+@media screen and (max-width: 768px) {
+    
+    /* 1. AJUSTES DE LA BARRA DE NAVEGACIÓN (NAVBAR) */
+    .navbar {
+        padding: 0 15px !important; /* Reducimos el espacio a los lados */
+    }
+    
+    .logo {
+        font-size: 20px !important; /* Texto del logo más chico */
+    }
+    
+    .logo img {
+        height: 40px !important; /* Logo de imagen más chico */
+    }
+    
+    /* Hacemos que los links de la barra se puedan deslizar hacia los lados si no caben */
+    .nav-links {
+        gap: 10px !important;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 5px;
+    }
+    
+    .nav-links a {
+        font-size: 14px !important;
+        padding: 6px 10px !important;
+    }
+
+    #avatar, #avatarNav {
+        width: 35px !important;
+        height: 35px !important;
+    }
+
+    /* 2. TEXTOS PRINCIPALES (Para que no se salgan de la pantalla) */
+    .hero-title, h1 {
+        font-size: 40px !important; /* Bajamos de 70px a 40px */
+        line-height: 1.2 !important;
+    }
+    
+    .hero-subtitle, .intro, .intro-text {
+        font-size: 16px !important;
+    }
+
+    /* 3. CAJAS Y CONTENEDORES (Para aprovechar el espacio) */
+    .container {
+        padding: 40px 15px !important;
+    }
+    
+    .account-card, .glass-card, .help-card, .news-card, .comment-section {
+        padding: 25px 20px !important;
+        border-radius: 20px !important;
+    }
+
+    /* 4. FORMULARIOS (Para la página de Cuenta y Comunidades) */
+    .social-inputs {
+        grid-template-columns: 1fr !important; /* Pone los inputs uno debajo del otro, no al lado */
+    }
+
+    .profile-pic-large {
+        width: 100px !important;
+        height: 100px !important;
+    }
+    
+    #displayName {
+        font-size: 24px !important;
+    }
+
+    /* 5. CÁPSULAS FLOTANTES (Ajuste para móviles) */
+    .navbar.estilo-cajas .logo, 
+    .navbar.estilo-cajas .nav-links {
+        padding: 5px 15px !important;
+        border-radius: 20px !important;
+    }
+}
+
+/* =========================================================
+   ZioXOS - AJUSTES PARA PANTALLAS EXTRA PEQUEÑAS (< 480px)
+   ========================================================= */
+@media screen and (max-width: 480px) {
+    .hero-title, h1 {
+        font-size: 32px !important;
+    }
+    .btn-main {
+        font-size: 16px !important;
+        padding: 12px 25px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
